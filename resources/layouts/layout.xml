@@ -1,0 +1,5 @@
+<layout id="WatchFace">
+    <drawable id="background" />
+    <label id="TimeLabel" x="55" y="15" font="Graphics.FONT_NUMBER_HOT" justification="Graphics.TEXT_JUSTIFY_CENTER" color="Graphics.COLOR_BLACK" />
+    <bitmap id="VaultBoy" x="100" y="78" filename="../drawables/vault_boy.png" /> 
+</layout>
