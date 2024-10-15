@@ -24,16 +24,19 @@ class pipView extends WatchUi.WatchFace {
 
     // Update the view
     function onUpdate(dc as Dc) as Void {
+        setTimeDisplay();
+        setHeartrateDisplay();
+
+        // Call the parent onUpdate function to redraw the layout
+        View.onUpdate(dc);
+    }
+
+    private function setTimeDisplay() {
         // Get and show the current time
         var clockTime = System.getClockTime();
         var timeString = Lang.format("$1$:$2$", [clockTime.hour, clockTime.min.format("%02d")]);
         var view = View.findDrawableById("TimeLabel") as Text;
         view.setText(timeString);
-
-        setHeartrateDisplay();
-
-        // Call the parent onUpdate function to redraw the layout
-        View.onUpdate(dc);
     }
 
     private function setHeartrateDisplay() {
