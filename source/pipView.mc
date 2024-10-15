@@ -3,6 +3,8 @@ import Toybox.Lang;
 import Toybox.System;
 import Toybox.WatchUi;
 
+using Toybox.Time.Gregorian as Date;
+
 using Toybox.ActivityMonitor as Mon;
 
 class pipView extends WatchUi.WatchFace {
@@ -26,9 +28,18 @@ class pipView extends WatchUi.WatchFace {
     function onUpdate(dc as Dc) as Void {
         setTimeDisplay();
         setHeartrateDisplay();
+        setDateDisplay();
 
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
+    }
+
+    private function setDateDisplay() {        
+    	var now = Time.now();
+	    var date = Date.info(now, Time.FORMAT_MEDIUM);
+	    var dateString = Lang.format("$1$ $2$, $3$", [date.month, date.day, date.year]);
+	    var view = View.findDrawableById("DateLabel") as Text;      
+	    view.setText(dateString);	    	
     }
 
     private function setTimeDisplay() {
