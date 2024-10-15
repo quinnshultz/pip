@@ -3,6 +3,8 @@ import Toybox.Lang;
 import Toybox.System;
 import Toybox.WatchUi;
 
+using Toybox.ActivityMonitor as Mon;
+
 class pipView extends WatchUi.WatchFace {
 
     function initialize() {
@@ -28,9 +30,36 @@ class pipView extends WatchUi.WatchFace {
         var view = View.findDrawableById("TimeLabel") as Text;
         view.setText(timeString);
 
+        setHeartrateDisplay();
+
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
     }
+
+    private function setHeartrateDisplay() {
+    	var heartRate = "";
+    	
+    	if(Mon has :INVALID_HR_SAMPLE) {
+    		heartRate = retrieveHeartrateText();
+    	}
+    	else {
+    		heartRate = "";
+    	}
+    	
+        var view = View.findDrawableById("HeartrateLabel") as Text;  
+	    view.setText(heartRate);
+    }
+    
+    private function retrieveHeartrateText() {
+    	var heartrateIterator = ActivityMonitor.getHeartRateHistory(null, false);
+	    var currentHeartrate = heartrateIterator.next().heartRate;
+
+	    if(currentHeartrate == Mon.INVALID_HR_SAMPLE) {
+		    return "";
+	    }		
+
+	    return currentHeartrate.format("%d");
+    }   
 
     // Called when this View is removed from the screen. Save the
     // state of this View here. This includes freeing resources from
