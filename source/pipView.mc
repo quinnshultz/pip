@@ -28,6 +28,7 @@ class pipView extends WatchUi.WatchFace {
     function onUpdate(dc as Dc) as Void {
         setTimeDisplay();
         setHeartrateDisplay();
+        setStepCountDisplay();
         setDateDisplay();
 
         // Call the parent onUpdate function to redraw the layout
@@ -48,6 +49,12 @@ class pipView extends WatchUi.WatchFace {
         var timeString = Lang.format("$1$:$2$", [clockTime.hour, clockTime.min.format("%02d")]);
         var view = View.findDrawableById("TimeLabel") as Text;
         view.setText(timeString);
+    }
+
+    private function setStepCountDisplay() {
+    	var stepCount = Mon.getInfo().steps.toString();		
+	    var view = View.findDrawableById("StepLabel") as Text;      
+	    view.setText(stepCount + " steps");
     }
 
     private function setHeartrateDisplay() {
