@@ -3,10 +3,12 @@ import Toybox.Lang;
 import Toybox.System;
 import Toybox.WatchUi;
 
+using Toybox.Position;
+
 using Toybox.Time.Gregorian as Date;
 using Toybox.ActivityMonitor as Mon;
 using Toybox.Weather as Climate;
-using Toybox.Math as Math;
+
 
 class pipView extends WatchUi.WatchFace {
 
@@ -23,6 +25,9 @@ class pipView extends WatchUi.WatchFace {
     // the state of this View and prepare it to be shown. This includes
     // loading resources into memory.
     function onShow() as Void {
+        setSunDisplay();
+        setDateDisplay();
+        setTemperatureDisplay();
     }
 
     // Update the view
@@ -30,8 +35,6 @@ class pipView extends WatchUi.WatchFace {
         setTimeDisplay();
         setHeartrateDisplay();
         setStepCountDisplay();
-        setDateDisplay();
-        setTemperatureDisplay();
 
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
@@ -57,6 +60,37 @@ class pipView extends WatchUi.WatchFace {
     	var stepCount = Mon.getInfo().steps.toString();		
 	    var view = View.findDrawableById("StepLabel") as Text;      
 	    view.setText(stepCount + " steps");
+    }
+
+    private function setSunDisplay() {
+        var location = Position.getInfo().position;
+        var now = Time.now();
+
+        // Set sunrise label
+        var sunriseTime = Climate.getSunrise(location, now);
+        var view = View.findDrawableById("SunriseLabel") as Text;
+        if (sunriseTime != null) {
+            var gregSunriseTime = Date.info(sunriseTime, Time.FORMAT_MEDIUM);
+            var sunriseTimeString = Lang.format("$1$:$2$", [gregSunriseTime.hour, gregSunriseTime.min.format("%02d")]);
+
+            view.setText(sunriseTimeString);
+        } else {
+            view.setText("-");
+        }
+
+        // Set sunset label
+        var sunsetTime = Climate.getSunset(location, now);
+        view = View.findDrawableById("SunsetLabel") as Text;
+        if (sunsetTime != null) {
+            var gregSunsetTime = Date.info(sunsetTime, Time.FORMAT_MEDIUM);
+            var sunsetTimeString = Lang.format("$1$:$2$", [gregSunsetTime.hour, gregSunsetTime.min.format("%02d")]);
+
+            view.setText(sunsetTimeString);
+        } else {
+            view.setText("-");
+        }
+
+        
     }
 
     private function setTemperatureDisplay() {

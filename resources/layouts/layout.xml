@@ -7,5 +7,8 @@
     <bitmap id="HeartrateIcon" x="131" y="5" filename="../drawables/heart.png" />
     <label id ="TemperatureLabel" text="Temp: 85 °F" x="54" y="85" font="Gfx.FONT_XTINY" justification="Gfx.TEXT_JUSTIFY_CENTER" color="Gfx.COLOR_BLACK" />
     <label id="HighLowTempLabel" text="105/72" x="54" y="104" font="Gfx.FONT_XTINY" justification="Gfx.TEXT_JUSTIFY_CENTER" color="Gfx.COLOR_BLACK" />
+    <label id="SunriseLabel" text="7:00" x="55" y="150" font="Graphics.FONT_XTINY" justification="Graphics.TEXT_JUSTIFY_CENTER" color="Graphics.COLOR_BLACK" />
+    <label id="SunsetLabel" text="6:59" x="119" y="150" font="Graphics.FONT_XTINY" justification="Graphics.TEXT_JUSTIFY_CENTER" color="Graphics.COLOR_BLACK" />
+    <bitmap id="SunriseIcon" x="center" y="150" filename="../drawables/sunrise.png" />
     <bitmap id="VaultBoy" x="100" y="72" filename="../drawables/vault_boy.png" /> 
 </layout>
