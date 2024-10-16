@@ -4,8 +4,9 @@ import Toybox.System;
 import Toybox.WatchUi;
 
 using Toybox.Time.Gregorian as Date;
-
 using Toybox.ActivityMonitor as Mon;
+using Toybox.Weather as Climate;
+using Toybox.Math as Math;
 
 class pipView extends WatchUi.WatchFace {
 
@@ -30,6 +31,7 @@ class pipView extends WatchUi.WatchFace {
         setHeartrateDisplay();
         setStepCountDisplay();
         setDateDisplay();
+        setTemperatureDisplay();
 
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
@@ -55,6 +57,23 @@ class pipView extends WatchUi.WatchFace {
     	var stepCount = Mon.getInfo().steps.toString();		
 	    var view = View.findDrawableById("StepLabel") as Text;      
 	    view.setText(stepCount + " steps");
+    }
+
+    private function setTemperatureDisplay() {
+        var celsiusTemp = Climate.getCurrentConditions().temperature;
+        // TODO: Allow option for celsius temperature
+        var temp = ((celsiusTemp * 1.8) + 32).toNumber() as Text;
+        var view = View.findDrawableById("TemperatureLabel") as Text;
+        view.setText("Temp: " + temp + "°F");
+
+        var celsiusHighTemp = Climate.getCurrentConditions().highTemperature;
+        var highTemp = ((celsiusHighTemp * 1.8) + 32).toNumber() as Text;
+
+        var celsiusLowTemp = Climate.getCurrentConditions().lowTemperature;
+        var lowTemp = ((celsiusLowTemp * 1.8) + 32).toNumber() as Text;
+        
+        view = View.findDrawableById("HighLowTempLabel") as Text;
+        view.setText(highTemp + "/" + lowTemp);
     }
 
     private function setHeartrateDisplay() {
