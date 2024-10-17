@@ -8,6 +8,7 @@ using Toybox.Position;
 using Toybox.Time.Gregorian as Date;
 using Toybox.ActivityMonitor as Mon;
 using Toybox.Weather as Climate;
+using Toybox.System as Sys;
 
 
 class pipView extends WatchUi.WatchFace {
@@ -28,6 +29,7 @@ class pipView extends WatchUi.WatchFace {
         setSunDisplay();
         setDateDisplay();
         setTemperatureDisplay();
+        setBatteryDisplay();
     }
 
     // Update the view
@@ -54,6 +56,13 @@ class pipView extends WatchUi.WatchFace {
         var timeString = Lang.format("$1$:$2$", [clockTime.hour, clockTime.min.format("%02d")]);
         var view = View.findDrawableById("TimeLabel") as Text;
         view.setText(timeString);
+    }
+
+    private function setBatteryDisplay() {
+        var battery = Sys.getSystemStats().battery;
+        var batStr = Lang.format( "$1$", [ battery.format( "%2d" ) ] );
+        var view = View.findDrawableById("BatteryLabel") as Text;
+        view.setText(batStr);
     }
 
     private function setStepCountDisplay() {

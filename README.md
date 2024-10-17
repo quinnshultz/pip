@@ -10,4 +10,4 @@ Garmin Watchface inspired by the Pip-Boy 2000 Mk VI from [Fallout](https://en.wi
 - Heartrate
 - Weather
 - Sunrise/Sunset
-
+- Battery
