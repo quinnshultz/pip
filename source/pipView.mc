@@ -37,6 +37,7 @@ class pipView extends WatchUi.WatchFace {
         setTimeDisplay();
         setHeartrateDisplay();
         setStepCountDisplay();
+        setBluetoothDisplay();
 
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
@@ -63,6 +64,16 @@ class pipView extends WatchUi.WatchFace {
         var batStr = Lang.format( "$1$", [ battery.format( "%2d" ) ] );
         var view = View.findDrawableById("BatteryLabel") as Text;
         view.setText(batStr);
+    }
+
+    private function setBluetoothDisplay() {
+        var icon = View.findDrawableById("BluetoothIcon");
+        var mySettings = System.getDeviceSettings();
+        if (mySettings.phoneConnected == true) {
+            icon.setVisible(true);
+        } else {
+            icon.setVisible(false);
+        }
     }
 
     private function setStepCountDisplay() {
