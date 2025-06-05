@@ -166,7 +166,9 @@ class pipView extends WatchUi.WatchFace {
 
     private function retrieveHeartrateText() {
     	var heartrateIterator = ActivityMonitor.getHeartRateHistory(1, false);
-        if (heartrateIterator == null) return "";
+        if (heartrateIterator == null) {
+            return "";
+        }
         var sample = heartrateIterator.next();
         if (sample == null || sample.heartRate == null || sample.heartRate == Mon.INVALID_HR_SAMPLE) {
             return "";
