@@ -47,8 +47,10 @@ class pipView extends WatchUi.WatchFace {
     	var now = Time.now();
 	    var date = Date.info(now, Time.FORMAT_MEDIUM);
 	    var dateString = Lang.format("$1$ $2$, $3$", [date.month, date.day, date.year]);
-	    var view = View.findDrawableById("DateLabel") as Text;      
-	    view.setText(dateString);	    	
+	    var view = View.findDrawableById("DateLabel") as Text;
+        if (view != null) {
+            view.setText(dateString);
+        }
     }
 
     private function setTimeDisplay() {
@@ -56,103 +58,122 @@ class pipView extends WatchUi.WatchFace {
         var clockTime = System.getClockTime();
         var timeString = Lang.format("$1$:$2$", [clockTime.hour, clockTime.min.format("%02d")]);
         var view = View.findDrawableById("TimeLabel") as Text;
-        view.setText(timeString);
+        if (view != null) {
+            view.setText(timeString);
+        }
     }
 
     private function setBatteryDisplay() {
         var battery = Sys.getSystemStats().battery;
         var batStr = Lang.format( "$1$", [ battery.format( "%2d" ) ] );
         var view = View.findDrawableById("BatteryLabel") as Text;
-        view.setText(batStr);
+        if (view != null) {
+            view.setText(batStr);
+        }
     }
 
     private function setBluetoothDisplay() {
         var icon = View.findDrawableById("BluetoothIcon");
         var mySettings = System.getDeviceSettings();
-        if (mySettings.phoneConnected == true) {
-            icon.setVisible(true);
-        } else {
-            icon.setVisible(false);
+        if (icon != null && mySettings != null) {
+            if (mySettings.phoneConnected == true) {
+                icon.setVisible(true);
+            } else {
+                icon.setVisible(false);
+            }
         }
     }
 
     private function setStepCountDisplay() {
-    	var stepCount = Mon.getInfo().steps.toString();		
-	    var view = View.findDrawableById("StepLabel") as Text;      
-	    view.setText(stepCount + " steps");
+    	var info = Mon.getInfo();
+        var stepCount = (info != null && info.steps != null) ? info.steps.toString() : "0";
+	    var view = View.findDrawableById("StepLabel") as Text;
+        if (view != null) {
+            view.setText(stepCount + " steps");
+        }
     }
 
     private function setSunDisplay() {
-        var location = Position.getInfo().position;
+        var posInfo = Position.getInfo();
+        var location = (posInfo != null) ? posInfo.position : null;
         var now = Time.now();
 
         // Set sunrise label
-        var sunriseTime = Climate.getSunrise(location, now);
+        var sunriseTime = (location != null) ? Climate.getSunrise(location, now) : null;
         var view = View.findDrawableById("SunriseLabel") as Text;
-        if (sunriseTime != null) {
-            var gregSunriseTime = Date.info(sunriseTime, Time.FORMAT_MEDIUM);
-            var sunriseTimeString = Lang.format("$1$:$2$", [gregSunriseTime.hour, gregSunriseTime.min.format("%02d")]);
-
-            view.setText(sunriseTimeString);
-        } else {
-            view.setText("-");
+        if (view != null) {
+            if (sunriseTime != null) {
+                var gregSunriseTime = Date.info(sunriseTime, Time.FORMAT_MEDIUM);
+                var sunriseTimeString = Lang.format("$1$:$2$", [gregSunriseTime.hour, gregSunriseTime.min.format("%02d")]);
+                view.setText(sunriseTimeString);
+            } else {
+                view.setText("-");
+            }
         }
 
         // Set sunset label
-        var sunsetTime = Climate.getSunset(location, now);
+        var sunsetTime = (location != null) ? Climate.getSunset(location, now) : null;
         view = View.findDrawableById("SunsetLabel") as Text;
-        if (sunsetTime != null) {
-            var gregSunsetTime = Date.info(sunsetTime, Time.FORMAT_MEDIUM);
-            var sunsetTimeString = Lang.format("$1$:$2$", [gregSunsetTime.hour, gregSunsetTime.min.format("%02d")]);
-
-            view.setText(sunsetTimeString);
-        } else {
-            view.setText("-");
+        if (view != null) {
+            if (sunsetTime != null) {
+                var gregSunsetTime = Date.info(sunsetTime, Time.FORMAT_MEDIUM);
+                var sunsetTimeString = Lang.format("$1$:$2$", [gregSunsetTime.hour, gregSunsetTime.min.format("%02d")]);
+                view.setText(sunsetTimeString);
+            } else {
+                view.setText("-");
+            }
         }
-
-        
     }
 
     private function setTemperatureDisplay() {
-        var celsiusTemp = Climate.getCurrentConditions().temperature;
+        var conditions = Climate.getCurrentConditions();
+        if (conditions == null || conditions.temperature == null) {
+            return;
+        }
+        var celsiusTemp = conditions.temperature;
         // TODO: Allow option for celsius temperature
         var temp = ((celsiusTemp * 1.8) + 32).toNumber() as Text;
         var view = View.findDrawableById("TemperatureLabel") as Text;
-        view.setText("Temp: " + temp + "°F");
+        if (view != null) {
+            view.setText("Temp: " + temp + "\u00b0F");
+        }
 
-        var celsiusHighTemp = Climate.getCurrentConditions().highTemperature;
-        var highTemp = ((celsiusHighTemp * 1.8) + 32).toNumber() as Text;
+        var celsiusHighTemp = conditions.highTemperature;
+        var highTemp = (celsiusHighTemp != null) ? ((celsiusHighTemp * 1.8) + 32).toNumber() : "-";
 
-        var celsiusLowTemp = Climate.getCurrentConditions().lowTemperature;
-        var lowTemp = ((celsiusLowTemp * 1.8) + 32).toNumber() as Text;
+        var celsiusLowTemp = conditions.lowTemperature;
+        var lowTemp = (celsiusLowTemp != null) ? ((celsiusLowTemp * 1.8) + 32).toNumber() : "-";
         
         view = View.findDrawableById("HighLowTempLabel") as Text;
-        view.setText(highTemp + "/" + lowTemp);
+        if (view != null) {
+            view.setText(highTemp + "/" + lowTemp);
+        }
     }
 
     private function setHeartrateDisplay() {
     	var heartRate = "";
-    	
     	if(Mon has :INVALID_HR_SAMPLE) {
     		heartRate = retrieveHeartrateText();
     	}
     	else {
     		heartRate = "";
     	}
-    	
-        var view = View.findDrawableById("HeartrateLabel") as Text;  
-	    view.setText(heartRate);
+        var view = View.findDrawableById("HeartrateLabel") as Text;
+        if (view != null) {
+            view.setText(heartRate);
+        }
     }
-    
+
     private function retrieveHeartrateText() {
     	var heartrateIterator = ActivityMonitor.getHeartRateHistory(1, false);
-	    var currentHeartrate = heartrateIterator.next().heartRate;
-
-	    if(currentHeartrate == Mon.INVALID_HR_SAMPLE) {
-		    return "";
-	    }		
-
-	    return currentHeartrate.format("%d");
+        if (heartrateIterator == null) {
+            return "";
+        }
+        var sample = heartrateIterator.next();
+        if (sample == null || sample.heartRate == null || sample.heartRate == Mon.INVALID_HR_SAMPLE) {
+            return "";
+        }
+        return sample.heartRate.format("%d");
     }   
 
     // Called when this View is removed from the screen. Save the
