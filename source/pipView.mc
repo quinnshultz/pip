@@ -2,6 +2,7 @@ import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.System;
 import Toybox.WatchUi;
+import Toybox.Application;
 
 using Toybox.Position;
 
@@ -19,7 +20,18 @@ class pipView extends WatchUi.WatchFace {
 
     // Load your resources here
     function onLayout(dc as Dc) as Void {
+        // Get settings
+        var settings = Application.getApp().getProperty("settings");
+        var darkMode = false;
+        if (settings != null && settings.has("darkMode")) {
+            darkMode = settings["darkMode"];
+        }
         setLayout(Rez.Layouts.WatchFace(dc));
+        if (darkMode) {
+            // Invert the display colors
+            dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
+            dc.drawBitmap(0, 0, dc.getWidth(), dc.getHeight(), dc.captureBitmap(0, 0, dc.getWidth(), dc.getHeight()), Graphics.DRAW_INVERT);
+        }
     }
 
     // Called when this View is brought to the foreground. Restore

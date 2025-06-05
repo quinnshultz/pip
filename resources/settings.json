@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "properties": {
+    "tempUnit": {
+      "type": "string",
+      "title": "Temperature Unit",
+      "enum": ["Fahrenheit", "Celsius"],
+      "default": "Fahrenheit"
+    },
+    "darkMode": {
+      "type": "boolean",
+      "title": "Dark Mode",
+      "default": false
+    }
+  }
+}
